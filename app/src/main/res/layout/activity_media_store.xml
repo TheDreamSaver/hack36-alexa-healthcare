@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12sp"
+    tools:context="com.example.sidkathuria14.healthcare.MedStoreActivity">
+
+    <fragment
+        android:id="@+id/medStoreMap"
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_weight="1"
+        tools:context="com.example.sidkathuria14.healthcare.MedStoreActivity"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMedStores"
+        android:layout_marginTop="21sp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>
