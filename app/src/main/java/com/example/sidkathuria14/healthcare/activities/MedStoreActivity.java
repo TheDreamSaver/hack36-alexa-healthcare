@@ -49,7 +49,7 @@ public class MedStoreActivity extends AppCompatActivity implements OnMapReadyCal
         String medicineName = getIntent().getStringExtra("medicine_name");
 
         retrofit = new Retrofit.Builder()
-                .baseUrl()
+                .baseUrl("https://fierce-forest-33378.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
