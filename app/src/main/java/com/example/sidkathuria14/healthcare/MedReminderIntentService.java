@@ -1,6 +1,7 @@
 package com.example.sidkathuria14.healthcare;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -62,7 +63,10 @@ public class MedReminderIntentService extends IntentService {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_location_on_red_900_24dp))
                 .setColor(Color.RED)
                 .setContentTitle("Please Take "+medName)
-                .setContentIntent(notificationPendingIntent);
+                .setContentIntent(notificationPendingIntent)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_HIGH);
+
 
         builder.setChannelId("channel_01");
 

@@ -47,7 +47,7 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_scheduler);
         alarmManager= (AlarmManager) getSystemService(ALARM_SERVICE);
-
+        Log.d("MedScheduler", "onCreate: dbsize "+getCount());
         medName=findViewById(R.id.medName);
         medName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,9 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
 
         opMode=getIntent().getStringExtra("opMode");
         if(opMode.equals("update")) {
+            Log.d("MedScheduler", "onCreate: med name "+getIntent().getStringExtra("MedName"));
             medName.setText(getIntent().getStringExtra("MedName"));
+            medName.setMedName(getIntent().getStringExtra("MedName"));
             timerList = getTimeListFromDB(getIntent().getStringExtra("MedName"));
             Log.d("MedScheduler", "onCreate: "+timerList);
         }else{
@@ -159,6 +161,7 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         if(cursor.moveToNext()){
             timerString = cursor.getString(cursor.getColumnIndexOrThrow(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM));
         }
+        Log.d("MedScheduler", "getTimeListFromDB: "+timerString);
         return getTimerList(timerString);
     }
 
@@ -177,24 +180,30 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
                 String timerString = createTimerString(timerList);
                 Log.d("MedScheduler", "onOptionsItemSelected: "+timerString);
                 Log.d("MedScheduler", "onOptionsItemSelected: "+timerList);
-                ContentValues values = new ContentValues();
-                values.put(MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME,medName.getMedName());
-                values.put(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM,timerString);
 
                 MedScheduleDBHelper helper = new MedScheduleDBHelper(this);
                 SQLiteDatabase db = helper.getWritableDatabase();
                 if(opMode.equals("new")) {
+                    ContentValues values = new ContentValues();
+                    values.put(MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME,medName.getMedName());
+                    values.put(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM,timerString);
+
                     db.insert(
                             MedScheduleContract.MedScheduleEntry.TABLE_NAME, null, values
                     );
                 }else{
                     Log.d("MedScheduler","enter update");
-                    db.update(
+                    Log.d("MedScheduler", "onOptionsItemSelected: update "+timerString+" med "+medName.getMedName());
+                    ContentValues values = new ContentValues();
+                    values.put(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM,timerString);
+                    Log.d("MedScheduler", "onOptionsItemSelected: values "+values.getAsString(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM));
+                    int size=db.update(
                             MedScheduleContract.MedScheduleEntry.TABLE_NAME,
                             values,
-                            MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME+" LIKE ?",
+                            MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME+" =?",
                             new String[]{medName.getMedName()}
                     );
+                    Log.d("MedScheduler", "onOptionsItemSelected: "+size);
                 }
 
                 for(String thisTime :timerList){
@@ -202,6 +211,8 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
                     int min =Integer.parseInt(thisTime.substring(3,5));
                     setAlarmForMed(hour,min);
                 }
+
+                Log.d("MedScheduler", "onOptionsItemSelected: dbSize "+getCount());
 
                 finish();
         }
@@ -211,6 +222,8 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         timerList.add(String.format("%02d:%02d",hourOfDay,minute));
+        timeEmptyView.setVisibility(View.GONE);
+        rvTimeSchedules.setVisibility(View.VISIBLE);
         scheduleAdapter.updateList(timerList);
 
     }
@@ -256,5 +269,15 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         AlertDialog dialog=builder.create();
         dialog.show();
 
+    }
+
+    public int getCount(){
+        MedScheduleDBHelper helper = new MedScheduleDBHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String countQuery="SELECT * FROM "+ MedScheduleContract.MedScheduleEntry.TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery,null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 }
