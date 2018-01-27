@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="50sp"
+    android:layout_marginRight="50sp">
+
+    <TextView
+        android:id="@+id/tvClick"
+        android:text="Click"
+        android:gravity="center"
+        android:paddingLeft="21sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/colorAccent"/>
+    <ImageView
+        android:id="@+id/ivAddTimeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="5sp"
+        android:layout_toRightOf="@+id/tvClick"
+        android:src="@drawable/ic_alarm_deep_purple_700_24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvClick"
+        android:layout_below="@+id/tvClick"
+        android:padding="7sp"
+        android:text="to add time"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
+</RelativeLayout>

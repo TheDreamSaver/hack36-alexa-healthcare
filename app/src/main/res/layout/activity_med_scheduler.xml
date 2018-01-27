@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+
         <TextView
             android:layout_marginTop="50sp"
             android:text="Time Schedule"
@@ -38,13 +39,23 @@
             android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <android.support.v7.widget.RecyclerView
-            android:background="@color/colorPureSoul"
-            android:padding="10sp"
-            android:id="@+id/rvTimeSchedules"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent">
+            <include
+                android:id="@+id/emptyView"
+                layout="@layout/layout_empty_timers"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:background="@color/colorPureSoul"
+                android:padding="10sp"
+                android:id="@+id/rvTimeSchedules"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
