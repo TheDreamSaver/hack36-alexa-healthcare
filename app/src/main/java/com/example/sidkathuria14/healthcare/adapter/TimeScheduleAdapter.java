@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.sidkathuria14.healthcare.R;
+import com.example.sidkathuria14.healthcare.interfaces.LongClickListener;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,13 @@ public class TimeScheduleAdapter extends RecyclerView.Adapter<TimeScheduleAdapte
 
     private Context mContext;
     private ArrayList<String> timeScheduleList;
+    private LongClickListener longClickListener;
+
+    public void setLongClickListener(LongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
+
 
     public TimeScheduleAdapter(Context mContext, ArrayList<String> timeScheduleList) {
         this.mContext = mContext;
@@ -45,8 +53,10 @@ public class TimeScheduleAdapter extends RecyclerView.Adapter<TimeScheduleAdapte
 
     @Override
     public int getItemCount() {
-        return 0;
+        return timeScheduleList.size();
     }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -63,7 +73,11 @@ public class TimeScheduleAdapter extends RecyclerView.Adapter<TimeScheduleAdapte
             thisView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // implement long click listener
+                    // implement long click listenet
+                    if(longClickListener!=null){
+
+                    }
+
                 }
             });
         }

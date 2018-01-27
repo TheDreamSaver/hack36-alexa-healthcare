@@ -1,6 +1,9 @@
 package com.example.sidkathuria14.healthcare.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
+import com.example.sidkathuria14.healthcare.MedReminderIntentService;
 import com.example.sidkathuria14.healthcare.MedTextView;
 import com.example.sidkathuria14.healthcare.R;
 import com.example.sidkathuria14.healthcare.adapter.TimeScheduleAdapter;
@@ -25,6 +29,7 @@ import java.util.Calendar;
 
 public class MedSchedulerActivity extends AppCompatActivity  implements android.app.TimePickerDialog.OnTimeSetListener {
     MedTextView medName;
+    AlarmManager alarmManager;
     RecyclerView rvTimeSchedules;
     TimeScheduleAdapter scheduleAdapter;
     RelativeLayout timeEmptyView;
@@ -32,8 +37,12 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
     FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_med_scheduler);
+        alarmManager= (AlarmManager) getSystemService(ALARM_SERVICE);
+
         timerList=getTimeListFromDB(getIntent().getStringExtra("MedName"));
         timeEmptyView=findViewById(R.id.emptyView);
         fab = findViewById(R.id.fab);
@@ -159,6 +168,8 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.saveBtn:
+
+                // TODO update
                 String timerString = createTimerString(timerList);
                 ContentValues values = new ContentValues();
                 values.put(MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME,medName.getMedName());
@@ -171,6 +182,12 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
                         MedScheduleContract.MedScheduleEntry.TABLE_NAME,null,values
                 );
 
+                for(String thisTime :timerList){
+                    int hour = Integer.parseInt(thisTime.substring(0,2));
+                    int min =Integer.parseInt(thisTime.substring(3,5));
+                    setAlarmForMed(hour,min);
+                }
+
                 finish();
         }
         return super.onOptionsItemSelected(item);
@@ -181,5 +198,22 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         timerList.add(String.format("%02d:%02d",hourOfDay,minute)+";");
         scheduleAdapter.updateList(timerList);
 
+    }
+
+    private void setAlarmForMed(int hour, int minute){
+        Intent intent = new Intent(this, MedReminderIntentService.class);
+        intent.putExtra("MedName",medName.getMedName());
+        PendingIntent alarmIntent = PendingIntent.getService(
+                this,
+                hour+minute,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(System.currentTimeMillis());
+        now.set(Calendar.HOUR_OF_DAY,hour);
+        now.set(Calendar.MINUTE,minute);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,now.getTimeInMillis(),AlarmManager.INTERVAL_DAY,alarmIntent);
     }
 }
