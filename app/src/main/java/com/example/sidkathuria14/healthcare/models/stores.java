@@ -1,41 +1,52 @@
 package com.example.sidkathuria14.healthcare.models;
 
+import java.util.ArrayList;
+
 /**
  * Created by sidkathuria14 on 27/1/18.
  */
 
 public class stores {
-    private String name,alternative_medicine,address;
-    private double lat,lng;
+    private String name,medicine, unit;
+    private ArrayList<shops> shops;
 
-    public stores(String name, String alternative_medicine, String address, double lat, double lng) {
+    private cordinates coordinates;
+
+    ArrayList<String> alternate;
+
+    public stores(String name, String medicine, String unit,
+                  ArrayList<com.example.sidkathuria14.healthcare.models.shops> shops,
+                  cordinates coordinates, ArrayList<String> alternate) {
         this.name = name;
-        this.alternative_medicine = alternative_medicine;
-        this.address = address;
-        this.lat = lat;
-        this.lng = lng;
+        this.medicine = medicine;
+        this.unit = unit;
+        this.shops = shops;
+        this.coordinates = coordinates;
+        this.alternate = alternate;
     }
-public stores(){
-
-}
 
     public String getName() {
         return name;
     }
 
-    public String getAlternative_medicine() {
-        return alternative_medicine;
+    public String getMedicine() {
+        return medicine;
     }
 
-    public String getAddress() {
-        return address;
+    public String getUnit() {
+        return unit;
     }
 
-    public double getLat() {
-        return lat;
+    public ArrayList<com.example.sidkathuria14.healthcare.models.shops> getShops() {
+        return shops;
     }
 
-    public double getLng() {
-        return lng;
+    public cordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public ArrayList<String> getAlternate() {
+        return alternate;
     }
 }
+

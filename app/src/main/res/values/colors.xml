@@ -7,4 +7,7 @@
     <color name="colorPureSoul">#ffffff</color>
     <color name="colorBlackNight">#000000</color>
     <color name="colorBlueNight">#1a0176</color>
+    <color name = "red">#ff0000</color>
+<color name = "pink">#ff4d4d</color>
+
 </resources>
