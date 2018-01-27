@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="12sp"
-    tools:context="com.example.sidkathuria14.healthcare.MedStoreActivity">
+    tools:context="com.example.sidkathuria14.healthcare.activities.MedStoreActivity">
 
     <fragment
         android:id="@+id/medStoreMap"
@@ -14,7 +14,7 @@
         android:layout_height="0sp"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_weight="1"
-        tools:context="com.example.sidkathuria14.healthcare.MedStoreActivity"/>
+        tools:context="com.example.sidkathuria14.healthcare.activities.MedStoreActivity"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvMedStores"

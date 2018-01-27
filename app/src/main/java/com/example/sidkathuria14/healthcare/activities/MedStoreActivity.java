@@ -1,10 +1,12 @@
-package com.example.sidkathuria14.healthcare;
+package com.example.sidkathuria14.healthcare.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.sidkathuria14.healthcare.R;
+import com.example.sidkathuria14.healthcare.adapter.MedStoreAdapter;
 import com.example.sidkathuria14.healthcare.api.StoresApi;
 import com.example.sidkathuria14.healthcare.models.stores;
 import com.google.android.gms.maps.CameraUpdateFactory;

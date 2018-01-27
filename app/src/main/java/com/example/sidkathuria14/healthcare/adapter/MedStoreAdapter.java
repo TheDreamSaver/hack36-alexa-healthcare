@@ -1,4 +1,4 @@
-package com.example.sidkathuria14.healthcare;
+package com.example.sidkathuria14.healthcare.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.sidkathuria14.healthcare.R;
 import com.example.sidkathuria14.healthcare.models.stores;
 
 import java.util.ArrayList;
