@@ -13,6 +13,6 @@ import retrofit2.http.GET;
 
 public interface StoresApi {
     @GET("nearest?medicine=Medicine4&latitude=81.012321&longitude=88.305505")
-    Call<ArrayList<stores>> getStores();
+    Call<stores> getStores();
 
 }
