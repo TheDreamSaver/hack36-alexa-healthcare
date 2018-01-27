@@ -61,7 +61,7 @@ class EditMedNameFragment : DialogFragment(), DialogInterface.OnClickListener {
         etPlaceBox=rootView?.findViewById(R.id.etPlaceBox)
         Log.d("dialog","onCreateDialog")
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Place Name")
+        builder.setTitle("Medicine Name")
                 .setView(rootView) // just sets the view NOT initialize the view
         builder.setPositiveButton(R.string.btn_OK, this)
         builder.setNegativeButton(R.string.btn_cancel, this)
