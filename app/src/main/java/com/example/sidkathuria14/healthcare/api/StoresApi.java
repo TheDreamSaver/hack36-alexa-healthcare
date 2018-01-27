@@ -2,6 +2,8 @@ package com.example.sidkathuria14.healthcare.api;
 
 import com.example.sidkathuria14.healthcare.models.stores;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 
@@ -11,6 +13,6 @@ import retrofit2.http.GET;
 
 public interface StoresApi {
     @GET("")
-    Call<stores> getStores();
+    Call<ArrayList<stores>> getStores();
 
 }
