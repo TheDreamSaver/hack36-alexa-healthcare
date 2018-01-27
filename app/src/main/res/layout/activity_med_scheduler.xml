@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.sidkathuria14.healthcare.activities.MedSchedulerActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorGray">
+        <TextView
+            android:textSize="18sp"
+            android:background="@color/colorPureSoul"
+            android:padding="10sp"
+            android:textStyle="bold"
+            android:text="Medicine Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <com.example.sidkathuria14.healthcare.MedTextView
+            android:padding="10sp"
+            android:background="@color/colorPureSoul"
+            android:text="given Name"
+            android:id="@+id/medName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:layout_marginTop="50sp"
+            android:text="Time Schedule"
+            android:padding="10sp"
+            android:background="@color/colorPureSoul"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include
+                android:id="@+id/emptyView"
+                layout="@layout/layout_empty_timers"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:background="@color/colorPureSoul"
+                android:padding="10sp"
+                android:id="@+id/rvTimeSchedules"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_alarm_add_white_36dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="25sp"
+        android:layout_marginRight="25sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
