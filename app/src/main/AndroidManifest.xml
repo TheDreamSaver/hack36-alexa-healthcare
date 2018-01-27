@@ -40,7 +40,11 @@
         </activity>
         <activity android:name=".MediaStoreActivity" />
         <activity android:name=".activities.MedSchedulerActivity" />
-        <activity android:name=".activities.MedSchedulesViewActivity"></activity>
+        <activity android:name=".activities.MedSchedulesViewActivity" />
+
+        <service
+            android:name=".MedReminderIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

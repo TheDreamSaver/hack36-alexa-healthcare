@@ -45,7 +45,7 @@ public class MedStoreAdapter extends RecyclerView.Adapter<MedStoreAdapter.MedSto
 
     @Override
     public int getItemCount() {
-        return 0;
+        return medStoreList.size();
     }
 
     public class MedStoreViewHolder extends RecyclerView.ViewHolder {

@@ -15,14 +15,14 @@ import com.example.sidkathuria14.healthcare.dialogs.EditMedNameFragment
 
 class MedTextView(private val mContext: Context, attrs: AttributeSet) : android.support.v7.widget.AppCompatTextView(mContext, attrs) {
     private val placeNameDialog: EditMedNameFragment = EditMedNameFragment()
-    var placeName: String? = null
+    var medName: String? = null
 
     init {
         placeNameDialog.setOnPlaceNameListener(object : EditMedNameFragment.OnPlaceNameListener {
             override fun onPlaceNameDone(string: String) {
                 Log.d(TAG, "onPlaceNameDone: " + string)
                 this@MedTextView.text = string
-                placeName = string
+                medName = string
             }
         })
     }
