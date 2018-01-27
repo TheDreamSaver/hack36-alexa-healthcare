@@ -1,8 +1,10 @@
 package com.example.sidkathuria14.healthcare.activities;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +26,7 @@ import com.example.sidkathuria14.healthcare.R;
 import com.example.sidkathuria14.healthcare.adapter.TimeScheduleAdapter;
 import com.example.sidkathuria14.healthcare.database.MedScheduleContract;
 import com.example.sidkathuria14.healthcare.database.MedScheduleDBHelper;
+import com.example.sidkathuria14.healthcare.interfaces.LongClickListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +39,7 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
     RelativeLayout timeEmptyView;
     ArrayList<String> timerList;
     FloatingActionButton fab;
+    String opMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -43,7 +48,22 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         setContentView(R.layout.activity_med_scheduler);
         alarmManager= (AlarmManager) getSystemService(ALARM_SERVICE);
 
-        timerList=getTimeListFromDB(getIntent().getStringExtra("MedName"));
+        medName=findViewById(R.id.medName);
+        medName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                medName.showDialog();
+            }
+        });
+
+        opMode=getIntent().getStringExtra("opMode");
+        if(opMode.equals("update")) {
+            medName.setText(getIntent().getStringExtra("MedName"));
+            timerList = getTimeListFromDB(getIntent().getStringExtra("MedName"));
+            Log.d("MedScheduler", "onCreate: "+timerList);
+        }else{
+            timerList=new ArrayList<>();
+        }
         timeEmptyView=findViewById(R.id.emptyView);
         fab = findViewById(R.id.fab);
 
@@ -63,49 +83,33 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
             }
         });
 
-        medName=findViewById(R.id.medName);
-        medName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                medName.showDialog();
-            }
-        });
+
 
         rvTimeSchedules=findViewById(R.id.rvTimeSchedules);
         rvTimeSchedules.setLayoutManager(new LinearLayoutManager(
                 this,LinearLayoutManager.VERTICAL,false
         ));
 
-        scheduleAdapter = new TimeScheduleAdapter(this,new ArrayList<String>());
+        scheduleAdapter = new TimeScheduleAdapter(this,timerList);
+        scheduleAdapter.setLongClickListener(new LongClickListener() {
+            @Override
+            public void onLongClick(String name) {
+                deleteTime(name);
+            }
+        });
         rvTimeSchedules.setAdapter(scheduleAdapter);
-    }
-
-    private boolean checkDB(){
-        MedScheduleDBHelper helper = new MedScheduleDBHelper(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String[] projection = new String[]{MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME};
-        Cursor cursor = db.query(
-                MedScheduleContract.MedScheduleEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-
-        );
-        return !cursor.moveToNext();
     }
 
     @Override
     protected void onResume() {
-        if(!checkDB()){
+        if(timerList.size()==0){
             timeEmptyView.setVisibility(View.VISIBLE);
             rvTimeSchedules.setVisibility(View.GONE);
         }else{
             timeEmptyView.setVisibility(View.GONE);
             rvTimeSchedules.setVisibility(View.VISIBLE);
             scheduleAdapter.updateList(timerList);
+
         }
         super.onResume();
     }
@@ -169,18 +173,29 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         switch (item.getItemId()){
             case R.id.saveBtn:
 
-                // TODO update
+
                 String timerString = createTimerString(timerList);
+                Log.d("MedScheduler", "onOptionsItemSelected: "+timerString);
+                Log.d("MedScheduler", "onOptionsItemSelected: "+timerList);
                 ContentValues values = new ContentValues();
                 values.put(MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME,medName.getMedName());
                 values.put(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM,timerString);
 
                 MedScheduleDBHelper helper = new MedScheduleDBHelper(this);
                 SQLiteDatabase db = helper.getWritableDatabase();
-
-                db.insert(
-                        MedScheduleContract.MedScheduleEntry.TABLE_NAME,null,values
-                );
+                if(opMode.equals("new")) {
+                    db.insert(
+                            MedScheduleContract.MedScheduleEntry.TABLE_NAME, null, values
+                    );
+                }else{
+                    Log.d("MedScheduler","enter update");
+                    db.update(
+                            MedScheduleContract.MedScheduleEntry.TABLE_NAME,
+                            values,
+                            MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME+" LIKE ?",
+                            new String[]{medName.getMedName()}
+                    );
+                }
 
                 for(String thisTime :timerList){
                     int hour = Integer.parseInt(thisTime.substring(0,2));
@@ -195,7 +210,7 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        timerList.add(String.format("%02d:%02d",hourOfDay,minute)+";");
+        timerList.add(String.format("%02d:%02d",hourOfDay,minute));
         scheduleAdapter.updateList(timerList);
 
     }
@@ -215,5 +230,31 @@ public class MedSchedulerActivity extends AppCompatActivity  implements android.
         now.set(Calendar.MINUTE,minute);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,now.getTimeInMillis(),AlarmManager.INTERVAL_DAY,alarmIntent);
+    }
+
+    private void deleteTime(final String thisTime){
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setMessage("Delete this ?")
+                .setPositiveButton(R.string.btn_OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for(int i =0;i<timerList.size();i++){
+                            if(timerList.get(i).equals(thisTime)){
+                                timerList.remove(i);
+                                break;
+                            }
+                        }
+                        scheduleAdapter.updateList(timerList);
+                    }
+                })
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog=builder.create();
+        dialog.show();
+
     }
 }

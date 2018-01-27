@@ -32,15 +32,17 @@
         <activity
             android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps">
+
+        </activity>
+        <activity android:name=".activities.MedStoreActivity" ></activity>
+        <activity android:name=".activities.MedSchedulerActivity" />
+        <activity android:name=".activities.MedSchedulesViewActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MediaStoreActivity" />
-        <activity android:name=".activities.MedSchedulerActivity" />
-        <activity android:name=".activities.MedSchedulesViewActivity" />
 
         <service
             android:name=".MedReminderIntentService"
