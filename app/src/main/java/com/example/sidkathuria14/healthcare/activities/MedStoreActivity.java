@@ -187,6 +187,13 @@ public void retrofitInit(){
                 medStoreAdapter.updateList(response.body().getShops());
             }
             Log.d(TAG, "onResponse:" +  response.body().getShops().get(0).getName()  );
+            for(int i=0;i<response.body().getShops().size();i++){
+                Log.d(TAG, "onResponse: " + Integer.parseInt(String.valueOf(i)));
+                medStoreMap.addMarker(new MarkerOptions().position(new LatLng(
+                        response.body().getShops().get(i).getLat(),
+                        response.body().getShops().get(i).getLon()
+                )));
+            }
         }
 
         @Override
