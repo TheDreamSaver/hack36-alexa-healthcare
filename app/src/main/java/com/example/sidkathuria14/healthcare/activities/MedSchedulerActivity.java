@@ -1,5 +1,6 @@
 package com.example.sidkathuria14.healthcare.activities;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
@@ -7,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 
-import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
-import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 import com.example.sidkathuria14.healthcare.MedTextView;
 import com.example.sidkathuria14.healthcare.R;
 import com.example.sidkathuria14.healthcare.adapter.TimeScheduleAdapter;
@@ -22,7 +23,7 @@ import com.example.sidkathuria14.healthcare.database.MedScheduleDBHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MedSchedulerActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class MedSchedulerActivity extends AppCompatActivity  implements android.app.TimePickerDialog.OnTimeSetListener {
     MedTextView medName;
     RecyclerView rvTimeSchedules;
     TimeScheduleAdapter scheduleAdapter;
@@ -41,13 +42,15 @@ public class MedSchedulerActivity extends AppCompatActivity implements TimePicke
             @Override
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
-                TimePickerDialog pickerDialog = TimePickerDialog.newInstance(
-                        MedSchedulerActivity.this,
-                        now.get(Calendar.HOUR_OF_DAY),
-                        now.get(Calendar.MINUTE),
-                        true
-                );
-                pickerDialog.show(getFragmentManager(),"timepicker");
+                android.app.TimePickerDialog timePickerDialog =
+                        new android.app.TimePickerDialog(
+                                MedSchedulerActivity.this,
+                                MedSchedulerActivity.this,
+                                now.get(Calendar.HOUR_OF_DAY),
+                                now.get(Calendar.MINUTE),
+                                true
+                        );
+                timePickerDialog.show();
             }
         });
 
@@ -147,7 +150,36 @@ public class MedSchedulerActivity extends AppCompatActivity implements TimePicke
     }
 
     @Override
-    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_med_schedule,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.saveBtn:
+                String timerString = createTimerString(timerList);
+                ContentValues values = new ContentValues();
+                values.put(MedScheduleContract.MedScheduleEntry.COLUMN_MED_NAME,medName.getMedName());
+                values.put(MedScheduleContract.MedScheduleEntry.COLUMN_TIME_REM,timerString);
+
+                MedScheduleDBHelper helper = new MedScheduleDBHelper(this);
+                SQLiteDatabase db = helper.getWritableDatabase();
+
+                db.insert(
+                        MedScheduleContract.MedScheduleEntry.TABLE_NAME,null,values
+                );
+
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        timerList.add(String.format("%02d:%02d",hourOfDay,minute)+";");
+        scheduleAdapter.updateList(timerList);
 
     }
 }
