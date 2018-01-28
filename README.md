@@ -23,6 +23,3 @@ or any alternate ones
 It also be used to add a schedule of medicine intake and continuously
 and be reminded of medicines
 
-
-
-Only merge was left !!!!
