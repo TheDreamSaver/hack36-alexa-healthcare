@@ -7,6 +7,7 @@ Aim-
 
 
 
+
 #Why to go to chemists if they dont have your medicines?
 
 Our alexa skill will inform about availabilty of medicines near you
@@ -23,3 +24,8 @@ or any alternate ones
 It also be used to add a schedule of medicine intake and continuously
 and be reminded of medicines
 
+##Alexa CodeBase
+https://github.com/TheDreamSaver/alexa-care-buddy
+
+##Ruby on Rails BackEnd
+https://github.com/swardhan/hack36
