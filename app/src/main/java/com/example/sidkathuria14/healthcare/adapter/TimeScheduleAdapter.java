@@ -68,14 +68,14 @@ public class TimeScheduleAdapter extends RecyclerView.Adapter<TimeScheduleAdapte
             time=itemView.findViewById(R.id.tvTimeRange);
         }
 
-        public void bind(String timeString){
+        public void bind(final String timeString){
             this.time.setText(timeString);
             thisView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // implement long click listenet
                     if(longClickListener!=null){
-
+                        longClickListener.onLongClick(timeString);
                     }
 
                 }

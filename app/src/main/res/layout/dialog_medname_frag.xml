@@ -8,7 +8,7 @@
         android:id="@+id/etPlaceBox"
         android:focusable="true"
         android:padding="20sp"
-        android:hint="Place Name"
+        android:hint="Medicine Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </EditText>

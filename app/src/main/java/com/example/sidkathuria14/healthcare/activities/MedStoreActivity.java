@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,8 +43,13 @@ public class MedStoreActivity extends AppCompatActivity implements OnMapReadyCal
     private RecyclerView rvMedStores;
     private GoogleMap medStoreMap;
     private MedStoreAdapter medStoreAdapter;
-    private  static final String TAG = "medstoreactivity";
-    LocationManager locMan;LocationListener locLis;
+    private static final String TAG = "medstoreactivity";
+    LocationManager locMan;
+    LocationListener locLis;
+
+    private double userLat, userLong;
+    private String userMed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +60,17 @@ public class MedStoreActivity extends AppCompatActivity implements OnMapReadyCal
                 .findFragmentById(R.id.medStoreMap);
         mapFragment.getMapAsync(this);
 
-        rvMedStores=findViewById(R.id.rvMedStores);
+        userMed = getIntent().getStringExtra("medicine_name");
+        userLat = getIntent().getDoubleExtra("latitude", 0.0);
+        userLong = getIntent().getDoubleExtra("longitude", 0.0);
+        Log.d(TAG, "onCreate: userLat " + userLat);
+
+        rvMedStores = findViewById(R.id.rvMedStores);
         rvMedStores.setLayoutManager(new LinearLayoutManager(
-                this,LinearLayoutManager.VERTICAL,false
+                this, LinearLayoutManager.VERTICAL, false
         ));
 
-        medStoreAdapter= new MedStoreAdapter(this,new ArrayList<shops>());
+        medStoreAdapter = new MedStoreAdapter(this, new ArrayList<shops>());
         rvMedStores.setAdapter(medStoreAdapter);
 
 
@@ -71,7 +82,7 @@ public class MedStoreActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onLocationChanged(Location location) {
 
-                String lat,lng;
+                String lat, lng;
                 Log.d(TAG, "lat: " + location.getLatitude());
                 Log.d(TAG, "lng: " + location.getLongitude());
                 Log.d(TAG, "prov: " + location.getProvider());
@@ -84,8 +95,8 @@ public class MedStoreActivity extends AppCompatActivity implements OnMapReadyCal
 //                medStoreMap.addMarker(new MarkerOptions().position(new LatLng
 //                        (location.getLatitude(),location.getLongitude())));
 
-medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(new
-        LatLng(location.getLatitude(),location.getLongitude()),10.0f)));
+                medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(new
+                        LatLng(location.getLatitude(), location.getLongitude()), 10.0f)));
 
 //                mapAddress = " http://maps.google.com/maps?q=loc:" + lat + "," + lng;
 
@@ -94,16 +105,19 @@ medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.from
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
+                Log.d(TAG, "onStatusChanged: status");
 
             }
 
             @Override
             public void onProviderEnabled(String s) {
+                Log.d(TAG, "onProviderEnabled: ");
 
             }
 
             @Override
             public void onProviderDisabled(String s) {
+                Log.d(TAG, "onProviderDisabled: ");
 
             }
         };
@@ -114,7 +128,7 @@ medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.from
                         != PackageManager.PERMISSION_GRANTED)) {
 
             ActivityCompat.requestPermissions(this,
-                    new String[] {
+                    new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION
                     }, 234);
@@ -126,7 +140,7 @@ medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.from
     }
 
     @SuppressWarnings("MissingPermission")
-    void startLocationTracking () {
+    void startLocationTracking() {
 
         locMan.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
@@ -149,57 +163,84 @@ medStoreMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.from
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        medStoreMap=googleMap;
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //User has previously accepted this permission
-            if (ActivityCompat.checkSelfPermission(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                medStoreMap.setMyLocationEnabled(true);
-            }
-        } else {
-            //Not in api-23, no need to prompt
-            medStoreMap.setMyLocationEnabled(true);
-        }
-        medStoreMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this,R.raw.retro));
+        medStoreMap = googleMap;
+//
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            //User has previously accepted this permission
+//            if (ActivityCompat.checkSelfPermission(this,
+//                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                medStoreMap.setMyLocationEnabled(true);
+//            }
+//        } else {
+//            //Not in api-23, no need to prompt
+//            medStoreMap.setMyLocationEnabled(true);
+//        }
+        medStoreMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro));
 //medStoreMap.moveCamera(CameraUpdateFactory.newLatLng().zoomBy(10.0f));
-        retrofitInit();
+
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(-34, 151);
-//        medStoreMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        medStoreMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        retrofitInit();
+
     }
 
-public void retrofitInit(){
-    retrofit = new Retrofit.Builder()
-            .baseUrl("https://fierce-forest-33378.herokuapp.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
 
-    StoresApi storesApi = retrofit.create(StoresApi.class);
+    public void retrofitInit() {
 
-    Callback<stores> callback = new Callback<stores>() {
-        @Override
-        public void onResponse(Call<stores> call, Response<stores> response) {
-            if(response.body()!=null){
-                addMedStoreMarkers();
-                medStoreAdapter.updateList(response.body().getShops());
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://fierce-forest-33378.herokuapp.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AlertDialog.Builder builder = new AlertDialog.Builder(MedStoreActivity.this);
+        builder.setMessage("Network error")
+                .create()
+                .show();
+
+
+        StoresApi storesApi = retrofit.create(StoresApi.class);
+
+        final Callback<stores> callback = new Callback<stores>() {
+            @Override
+            public void onResponse(Call<stores> call, Response<stores> response) {
+                if (response.body().getShops().size() != 0) {
+
+                    medStoreAdapter.updateList(response.body().getShops());
+
+                    Log.d(TAG, "onResponse: " + response.isSuccessful());
+                    Log.d(TAG, "onResponse: first " + response.body().getShops().get(0).getAddress());
+                    for (int i = 0; i < response.body().getShops().size(); i++) {
+                        Log.d(TAG, "onResponse: " + Integer.parseInt(String.valueOf(i)));
+//                    medStoreMap.addMarker(new MarkerOptions().position(new LatLng(
+//                            response.body().getShops().get(i).getLat(),
+//                            response.body().getShops().get(i).getLon()
+//                    )));
+                    }
+
+                }
             }
-            Log.d(TAG, "onResponse:" +  response.body().getShops().get(0).getName()  );
-        }
 
-        @Override
-        public void onFailure(Call<stores> call, Throwable t) {
-            Log.d(TAG, "onFailure: ");
-        }
-    };
+            @Override
+            public void onFailure(Call<stores> call, Throwable t) {
+                Log.d(TAG, "onFailure: ");
+            }
+        };
 
-    storesApi.getStores().enqueue(callback);
+        Log.d(TAG,"onMapReady: "+String.valueOf(userLat));
+        storesApi.getStores(userMed,userLat,userLong).enqueue(callback);
 
-}
-
-    private void addMedStoreMarkers(){
-        // to  add markers of medical stores on map
     }
+
+
+
+
+
+
 }
+
+
+
+
+
+

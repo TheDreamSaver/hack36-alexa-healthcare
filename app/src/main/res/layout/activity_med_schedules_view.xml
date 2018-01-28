@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sidkathuria14.healthcare.activities.MedSchedulesViewActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/emptyView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center">
+        <ImageView
+            android:id="@+id/ivShopIcon"
+            android:src="@drawable/medical"
+            android:layout_gravity="center"
+            android:layout_width="150sp"
+            android:layout_height="150sp" />
+        <TextView
+            android:layout_gravity="center"
+            android:textSize="21sp"
+            android:textStyle="italic"
+            android:fontFamily="sans-serif-thin"
+            android:layout_marginRight="50sp"
+            android:layout_marginLeft="60sp"
+            android:text="Your Saved Locations will be displayed here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMedNames"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabMed"
+        android:src="@drawable/medkit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="25sp"
+        android:layout_marginRight="25sp"
+        android:background="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
