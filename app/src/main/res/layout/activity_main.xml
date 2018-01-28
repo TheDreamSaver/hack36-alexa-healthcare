@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.sidkathuria14.healthcare.MainActivity">
 
-    <TextView
+    <ImageView
+        android:padding="25sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="21sp"
+        android:src="@drawable/nurse"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="0sp"
+        android:layout_weight="1"/>
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/medNearMe"
+            android:padding="25sp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:padding="7sp"
+                android:src="@drawable/medstore"
+                android:layout_width="match_parent"
+                android:layout_height="0sp"
+                android:layout_weight="4"/>
+
+            <TextView
+                android:textSize="21sp"
+                android:gravity="center"
+                android:text="Medicine Near me"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/medRem"
+            android:padding="25sp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:padding="7sp"
+                android:src="@drawable/medrem"
+                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:layout_height="0sp" />
+
+            <TextView
+                android:textSize="21sp"
+                android:gravity="center"
+                android:text="Medicine Reminders"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
